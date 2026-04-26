@@ -1,0 +1,107 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "catframework/cat-framework-api",
+    "type": "project",
+    "description": "REST API service exposing the CAT Framework over HTTP.",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "catframework/workflow": "*",
+        "catframework/project": "*",
+        "catframework/translation-memory": "*",
+        "catframework/mt": "*",
+        "catframework/qa": "*",
+        "catframework/terminology": "*",
+        "catframework/segmentation": "*",
+        "catframework/filter-docx": "*",
+        "catframework/filter-html": "*",
+        "catframework/filter-plaintext": "*",
+        "catframework/filter-pptx": "*",
+        "catframework/filter-xlsx": "*",
+        "catframework/xliff": "*",
+        "knuckleswtf/scribe": "^5.9",
+        "laravel/framework": "^13.0",
+        "laravel/sanctum": "^4.0",
+        "laravel/tinker": "^3.0"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.23",
+        "laravel/pail": "^1.2.5",
+        "laravel/pint": "^1.27",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "phpunit/phpunit": "^12.5.12"
+    },
+    "repositories": [
+        {"type": "path", "url": "../cat-framework/packages/workflow"},
+        {"type": "path", "url": "../cat-framework/packages/project"},
+        {"type": "path", "url": "../cat-framework/packages/translation-memory"},
+        {"type": "path", "url": "../cat-framework/packages/mt"},
+        {"type": "path", "url": "../cat-framework/packages/qa"},
+        {"type": "path", "url": "../cat-framework/packages/terminology"},
+        {"type": "path", "url": "../cat-framework/packages/segmentation"},
+        {"type": "path", "url": "../cat-framework/packages/srx"},
+        {"type": "path", "url": "../cat-framework/packages/filter-docx"},
+        {"type": "path", "url": "../cat-framework/packages/filter-html"},
+        {"type": "path", "url": "../cat-framework/packages/filter-plaintext"},
+        {"type": "path", "url": "../cat-framework/packages/filter-pptx"},
+        {"type": "path", "url": "../cat-framework/packages/filter-xlsx"},
+        {"type": "path", "url": "../cat-framework/packages/xliff"},
+        {"type": "path", "url": "../cat-framework/packages/tmx"},
+        {"type": "path", "url": "../cat-framework/packages/core"}
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "setup": [
+            "composer install",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan key:generate",
+            "@php artisan migrate --force"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185\" \"php artisan serve\" \"php artisan queue:listen --tries=1 --timeout=0\" \"php artisan pail --timeout=0\" --names=server,queue,logs --kill-others"
+        ],
+        "test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
+        ],
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
