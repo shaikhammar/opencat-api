@@ -6,17 +6,16 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
-        //
+        $this->app->singleton(
+            \App\Services\WorkflowRunnerFactory::class,
+            fn($app) => new \App\Services\WorkflowRunnerFactory(
+                $app->make(\App\Services\ProjectService::class),
+            ),
+        );
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         //

@@ -8,6 +8,8 @@ use App\Models\UploadedFile;
 use App\Services\FileStorageService;
 use App\Services\JobProgressService;
 use App\Services\ProjectService;
+use App\Services\WorkflowRunnerFactory;
+use CatFramework\Workflow\WorkflowOptions;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -27,9 +29,10 @@ class ProcessFileJob implements ShouldQueue
     ) {}
 
     public function handle(
-        JobProgressService  $progress,
-        ProjectService      $projectService,
-        FileStorageService  $fileStorage,
+        JobProgressService    $progress,
+        ProjectService        $projectService,
+        FileStorageService    $fileStorage,
+        WorkflowRunnerFactory $runnerFactory,
     ): void {
         $job     = ProcessingJob::findOrFail($this->processingJobId);
         $project = Project::findOrFail($this->projectId);
@@ -38,10 +41,7 @@ class ProcessFileJob implements ShouldQueue
         $job->update(['status' => 'processing']);
 
         try {
-            // catframework/workflow is a framework package — integration is wired here
-            // when the packages are available via path repositories.
-            // For now this is a stub that records the result shape.
-            $result = $this->runWorkflow($job, $project, $file, $projectService, $fileStorage, $progress);
+            $result = $this->runWorkflow($job, $project, $file, $projectService, $fileStorage, $progress, $runnerFactory);
             $progress->complete($job, $result);
         } catch (\Throwable $e) {
             $progress->fail($job, $e->getMessage());
@@ -49,24 +49,52 @@ class ProcessFileJob implements ShouldQueue
     }
 
     private function runWorkflow(
-        ProcessingJob      $job,
-        Project            $project,
-        UploadedFile       $file,
-        ProjectService     $projectService,
-        FileStorageService $fileStorage,
-        JobProgressService $progressService,
+        ProcessingJob         $job,
+        Project               $project,
+        UploadedFile          $file,
+        ProjectService        $projectService,
+        FileStorageService    $fileStorage,
+        JobProgressService    $progressService,
+        WorkflowRunnerFactory $runnerFactory,
     ): array {
-        // WorkflowRunner integration point — hydrate from ProjectService paths.
-        // When catframework packages resolve, replace this with:
-        //   $runner = app(WorkflowRunner::class);
-        //   $runner->onSegmentProcessed(fn($i, $total) => $progressService->update($job, (int)(($i/$total)*100)));
-        //   $workflowResult = $runner->process($manifest, $fileStorage->absolutePath($file));
+        $sourceLang = $project->source_lang ?? 'en';
+        $filePath   = $fileStorage->absolutePath($file);
+
+        $options            = WorkflowOptions::defaults();
+        $options->writeXliff = true;
+        $options->outputDir  = $projectService->storagePath($project);
+
+        $runner = $runnerFactory->build($project, $sourceLang, $this->targetLang, $options);
+
+        $total = 0;
+        $runner->onSegmentProcessed(function ($pair, int $index, int $runTotal) use ($progressService, $job, &$total): void {
+            $total = $runTotal;
+            if ($runTotal > 0) {
+                $progressService->update($job, (int) (($index + 1) / $runTotal * 99));
+            }
+        });
+
+        $workflowResult = $runner->process($filePath, $this->targetLang);
 
         return [
-            'xliffFileId' => null,
-            'matchStats'  => ['exact' => 0, 'fuzzy' => 0, 'mt' => 0, 'unmatched' => 0],
-            'qaIssues'    => [],
-            'timings'     => [],
+            'xliffPath'  => $workflowResult->xliffPath,
+            'storeFileId' => $workflowResult->storeFileId,
+            'matchStats'  => [
+                'exact'     => $workflowResult->matchStats->exact,
+                'fuzzy'     => $workflowResult->matchStats->fuzzy,
+                'mt'        => $workflowResult->matchStats->mt,
+                'unmatched' => $workflowResult->matchStats->unmatched,
+            ],
+            'qaIssues'   => array_map(
+                fn($issue) => [
+                    'checkId'  => $issue->checkId,
+                    'severity' => $issue->severity->value,
+                    'message'  => $issue->message,
+                    'segmentId' => $issue->segmentId,
+                ],
+                $workflowResult->qaIssues,
+            ),
+            'timings'    => $workflowResult->timings,
         ];
     }
 }
