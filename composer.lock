@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e54cc1c7188a070abf3bcf7a29f5d77b",
+    "content-hash": "adcc1d166684622653a73bcdda8fbbc8",
     "packages": [
         {
             "name": "brick/math",
@@ -269,6 +269,38 @@
             }
         },
         {
+            "name": "catframework/filter-po",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/filter-po",
+                "reference": "8ce78e1c410ddfc326ec0d1e91fdb180297937fe"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "ext-mbstring": "*",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\FilterPo\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\FilterPo\\Tests\\": "tests/"
+                }
+            },
+            "description": "GNU gettext PO file filter for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "catframework/filter-pptx",
             "version": "0.1.0",
             "dist": {
@@ -338,6 +370,39 @@
                 "MIT"
             ],
             "description": "Excel (.xlsx) file filter for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/filter-xml",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/filter-xml",
+                "reference": "c66bf63a8a3ab6127575fe08144b06cc1ddd16ca"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\FilterXml\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\FilterXml\\Tests\\": "tests/"
+                }
+            },
+            "description": "Generic XML file filter for the CAT Framework",
             "transport-options": {
                 "relative": true
             }

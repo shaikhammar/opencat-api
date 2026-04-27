@@ -6,6 +6,8 @@ use App\Models\Project;
 use CatFramework\FilterDocx\DocxFilter;
 use CatFramework\FilterHtml\HtmlFilter;
 use CatFramework\FilterPlaintext\PlainTextFilter;
+use CatFramework\FilterPo\PoFilter;
+use CatFramework\FilterXml\XmlFilter;
 use CatFramework\Project\Store\DatabaseSkeletonStore;
 use CatFramework\Project\Store\PostgresSegmentStore;
 use CatFramework\Qa\Check\DoubleSpaceCheck;
@@ -39,6 +41,8 @@ class WorkflowRunnerFactory
         $registry->register(new PlainTextFilter());
         $registry->register(new HtmlFilter());
         $registry->register(new DocxFilter());
+        $registry->register(new PoFilter());
+        $registry->register(new XmlFilter());
 
         [$tm, $segmentStore, $skeletonStore] = $this->isPostgres()
             ? $this->buildPostgresComponents($project, $targetLang)
