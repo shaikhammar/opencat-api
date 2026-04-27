@@ -7,6 +7,7 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\MtController;
 use App\Http\Controllers\ProcessController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectSegmentController;
 use App\Http\Controllers\QaController;
 use App\Http\Controllers\SegmentController;
 use App\Http\Controllers\TerminologyController;
@@ -40,6 +41,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Processing — full workflow per project
     Route::post('projects/{project}/process', [ProcessController::class, 'process']);
+
+    // Segment CRUD (Postgres only — requires DB_CONNECTION=pgsql)
+    Route::get('projects/{project}/segments', [ProjectSegmentController::class, 'index']);
+    Route::get('projects/{project}/segments/{segmentId}', [ProjectSegmentController::class, 'show']);
+    Route::patch('projects/{project}/segments/{segmentId}', [ProjectSegmentController::class, 'update']);
 
     // Fine-grained pipeline steps
     Route::post('extract', [ExtractController::class, 'extract']);

@@ -6,6 +6,8 @@ use App\Models\Project;
 use CatFramework\FilterDocx\DocxFilter;
 use CatFramework\FilterHtml\HtmlFilter;
 use CatFramework\FilterPlaintext\PlainTextFilter;
+use CatFramework\Project\Store\DatabaseSkeletonStore;
+use CatFramework\Project\Store\PostgresSegmentStore;
 use CatFramework\Qa\Check\DoubleSpaceCheck;
 use CatFramework\Qa\Check\EmptyTranslationCheck;
 use CatFramework\Qa\Check\NumberConsistencyCheck;
@@ -13,11 +15,13 @@ use CatFramework\Qa\Check\TagConsistencyCheck;
 use CatFramework\Qa\Check\WhitespaceCheck;
 use CatFramework\Qa\QualityRunner;
 use CatFramework\Segmentation\SrxSegmentationEngine;
+use CatFramework\TranslationMemory\PostgresTranslationMemory;
 use CatFramework\TranslationMemory\SqliteTranslationMemory;
 use CatFramework\Workflow\FileFilterRegistry;
 use CatFramework\Workflow\WorkflowOptions;
 use CatFramework\Workflow\WorkflowRunner;
 use CatFramework\Xliff\XliffWriter;
+use Illuminate\Support\Facades\DB;
 
 class WorkflowRunnerFactory
 {
@@ -36,8 +40,9 @@ class WorkflowRunnerFactory
         $registry->register(new HtmlFilter());
         $registry->register(new DocxFilter());
 
-        $tmPath = $this->projectService->tmPath($project, $targetLang);
-        $tm     = new SqliteTranslationMemory(new \PDO("sqlite:{$tmPath}"));
+        [$tm, $segmentStore, $skeletonStore] = $this->isPostgres()
+            ? $this->buildPostgresComponents($project, $targetLang)
+            : $this->buildSqliteComponents($project, $targetLang);
 
         $qa = new QualityRunner();
         $qa->register(new EmptyTranslationCheck());
@@ -54,6 +59,34 @@ class WorkflowRunnerFactory
             translationMemory:  $tm,
             qaRunner:           $qa,
             options:            $options,
+            segmentStore:       $segmentStore,
+            skeletonStore:      $skeletonStore,
         );
+    }
+
+    private function isPostgres(): bool
+    {
+        return config('database.default') === 'pgsql';
+    }
+
+    private function buildPostgresComponents(Project $project, string $targetLang): array
+    {
+        $pdo = DB::getPdo();
+        $tm  = new PostgresTranslationMemory($pdo, "project-{$project->id}-{$targetLang}");
+
+        return [
+            $tm,
+            new PostgresSegmentStore($pdo, (string) $project->id),
+            new DatabaseSkeletonStore($pdo),
+        ];
+    }
+
+    private function buildSqliteComponents(Project $project, string $targetLang): array
+    {
+        $tmPath = $this->projectService->tmPath($project, $targetLang);
+        $tm     = new SqliteTranslationMemory(new \PDO("sqlite:{$tmPath}"));
+
+        // No segment/skeleton stores in SQLite dev mode — segments live only in the XLIFF file.
+        return [$tm, null, null];
     }
 }
