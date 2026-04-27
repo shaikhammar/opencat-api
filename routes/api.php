@@ -1,13 +1,17 @@
 <?php
 
 use App\Http\Controllers\Auth\TokenController;
+use App\Http\Controllers\ExportController;
+use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\ExtractController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\MtController;
 use App\Http\Controllers\ProcessController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectFileController;
 use App\Http\Controllers\ProjectSegmentController;
+use App\Http\Controllers\ProjectTmController;
 use App\Http\Controllers\QaController;
 use App\Http\Controllers\SegmentController;
 use App\Http\Controllers\TerminologyController;
@@ -42,8 +46,24 @@ Route::middleware('auth:sanctum')->group(function () {
     // Processing — full workflow per project
     Route::post('projects/{project}/process', [ProcessController::class, 'process']);
 
+    // Processed file listing + export (Postgres only)
+    Route::get('projects/{project}/files', [ProjectFileController::class, 'index']);
+    Route::get('projects/{project}/files/{fileId}/export', [ExportController::class, 'export']);
+
+    // Project-scoped Postgres TM (replaces global /tm/* for Postgres deployments)
+    Route::get('projects/{project}/tm', [ProjectTmController::class, 'show']);
+    Route::post('projects/{project}/tm/lookup', [ProjectTmController::class, 'lookup']);
+    Route::post('projects/{project}/tm/import', [ProjectTmController::class, 'import']);
+    Route::post('projects/{project}/tm/segments', [ProjectTmController::class, 'store']);
+
+    // Webhooks
+    Route::get('projects/{project}/webhooks', [WebhookController::class, 'index']);
+    Route::post('projects/{project}/webhooks', [WebhookController::class, 'store']);
+    Route::delete('projects/{project}/webhooks/{webhook}', [WebhookController::class, 'destroy']);
+
     // Segment CRUD (Postgres only — requires DB_CONNECTION=pgsql)
     Route::get('projects/{project}/segments', [ProjectSegmentController::class, 'index']);
+    Route::patch('projects/{project}/segments', [ProjectSegmentController::class, 'bulkUpdate']);
     Route::get('projects/{project}/segments/{segmentId}', [ProjectSegmentController::class, 'show']);
     Route::patch('projects/{project}/segments/{segmentId}', [ProjectSegmentController::class, 'update']);
 

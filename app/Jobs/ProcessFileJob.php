@@ -4,7 +4,9 @@ namespace App\Jobs;
 
 use App\Models\ProcessingJob;
 use App\Models\Project;
+use App\Models\ProjectFile;
 use App\Models\UploadedFile;
+use App\Models\Webhook;
 use App\Services\FileStorageService;
 use App\Services\JobProgressService;
 use App\Services\ProjectService;
@@ -43,8 +45,38 @@ class ProcessFileJob implements ShouldQueue
         try {
             $result = $this->runWorkflow($job, $project, $file, $projectService, $fileStorage, $progress, $runnerFactory);
             $progress->complete($job, $result);
+            $this->dispatchWebhooks($project, $job, $result['storeFileId'] ?? null, 'completed', $result['matchStats'] ?? []);
         } catch (\Throwable $e) {
             $progress->fail($job, $e->getMessage());
+            $this->dispatchWebhooks($project, $job, null, 'failed', []);
+        }
+    }
+
+    private function dispatchWebhooks(
+        Project $project,
+        ProcessingJob $job,
+        ?string $storeFileId,
+        string $status,
+        array $matchStats,
+    ): void {
+        $webhooks = Webhook::where('project_id', $project->id)->get();
+
+        if ($webhooks->isEmpty()) {
+            return;
+        }
+
+        $payload = [
+            'event'       => "job.{$status}",
+            'jobId'       => $job->id,
+            'projectId'   => $project->id,
+            'fileId'      => $storeFileId,
+            'status'      => $status,
+            'matchStats'  => $matchStats,
+            'completedAt' => now()->toAtomString(),
+        ];
+
+        foreach ($webhooks as $webhook) {
+            DeliverWebhookJob::dispatch($webhook->id, $payload);
         }
     }
 
@@ -75,6 +107,25 @@ class ProcessFileJob implements ShouldQueue
         });
 
         $workflowResult = $runner->process($filePath, $this->targetLang);
+
+        if ($workflowResult->storeFileId !== null) {
+            $total = $workflowResult->matchStats->exact
+                   + $workflowResult->matchStats->fuzzy
+                   + $workflowResult->matchStats->mt
+                   + $workflowResult->matchStats->unmatched;
+
+            ProjectFile::updateOrCreate(
+                ['id' => $workflowResult->storeFileId],
+                [
+                    'project_id'       => $project->id,
+                    'uploaded_file_id' => $file->id,
+                    'target_lang'      => $this->targetLang,
+                    'original_name'    => $file->original_name,
+                    'mime_type'        => $file->mime_type ?? 'application/octet-stream',
+                    'segment_count'    => $total,
+                ],
+            );
+        }
 
         return [
             'xliffPath'  => $workflowResult->xliffPath,

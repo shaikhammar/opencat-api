@@ -92,6 +92,72 @@ class ProjectSegmentController extends Controller
         return response()->json(['data' => $this->segmentToArray($store->getSegment($segmentId))]);
     }
 
+    /**
+     * Bulk-update segment status for a file.
+     *
+     * @group Segments
+     * @authenticated
+     * @urlParam project integer required Project ID. Example: 1
+     * @bodyParam segmentIds string[] required UUIDs of segments to update. Example: ["550e8400-...","550e8400-..."]
+     * @bodyParam status string required Target status (untranslated|draft|translated|reviewed|approved|rejected). Example: approved
+     */
+    public function bulkUpdate(Request $request, Project $project): JsonResponse
+    {
+        $this->authorize('update', $project);
+
+        $data = $request->validate([
+            'segmentIds'   => 'required|array|min:1|max:500',
+            'segmentIds.*' => 'required|string|uuid',
+            'status'       => 'required|string|in:untranslated,draft,translated,reviewed,approved,rejected',
+        ]);
+
+        abort_unless(
+            config('database.default') === 'pgsql',
+            503,
+            'Bulk update requires a PostgreSQL database connection (DB_CONNECTION=pgsql).',
+        );
+
+        $newStatus = SegmentStatus::from($data['status']);
+        $ids       = $data['segmentIds'];
+
+        // Fetch current rows — validates ownership and surfaces Approved segments to skip.
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $rows = DB::select(
+            "SELECT id, status FROM segments WHERE id IN ({$placeholders}) AND project_id = ?",
+            [...$ids, (string) $project->id],
+        );
+
+        $found = collect($rows)->keyBy('id');
+
+        $updated = 0;
+        $skipped = 0;
+
+        DB::transaction(function () use ($ids, $found, $newStatus, $project, &$updated, &$skipped): void {
+            $store = $this->makeStore($project);
+
+            foreach ($ids as $id) {
+                if (!$found->has($id)) {
+                    // Not in this project — silently ignore (no info leak).
+                    $skipped++;
+                    continue;
+                }
+
+                if (SegmentStatus::from($found[$id]->status) === SegmentStatus::Approved
+                    && $newStatus !== SegmentStatus::Approved) {
+                    $skipped++;
+                    continue;
+                }
+
+                $store->updateSegment($id, null, $newStatus);
+                $updated++;
+            }
+        });
+
+        return response()->json([
+            'data' => ['updated' => $updated, 'skipped' => $skipped],
+        ]);
+    }
+
     private function makeStore(Project $project): PostgresSegmentStore
     {
         abort_unless(
