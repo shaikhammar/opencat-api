@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5242643aeed147f4b4fa81d0e57cd1f5",
+    "content-hash": "e54cc1c7188a070abf3bcf7a29f5d77b",
     "packages": [
         {
             "name": "brick/math",
@@ -134,6 +134,577 @@
                 }
             ],
             "time": "2024-02-09T16:56:22+00:00"
+        },
+        {
+            "name": "catframework/core",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/core",
+                "reference": "9a33e7b3d792e5e94b448a632dee0587edf9bc82"
+            },
+            "require": {
+                "ext-intl": "*",
+                "ext-mbstring": "*",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\Core\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\Core\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Shared data models and contract interfaces for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/filter-docx",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/filter-docx",
+                "reference": "555c1886689e49942d540479dac26084c86ef620"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "ext-zip": "*",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\FilterDocx\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\FilterDocx\\Tests\\": "tests/"
+                }
+            },
+            "description": "DOCX (.docx) file filter for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/filter-html",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/filter-html",
+                "reference": "cb882fdaac48df7c158350d836f7d0456dd1f2c3"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\FilterHtml\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\FilterHtml\\Tests\\": "tests/"
+                }
+            },
+            "description": "HTML file filter for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/filter-plaintext",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/filter-plaintext",
+                "reference": "7ed9c577b2d416ad6b52c16eb6fd9f5daeeef532"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\FilterPlaintext\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\FilterPlaintext\\Tests\\": "tests/"
+                }
+            },
+            "description": "Plain text (.txt) file filter for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/filter-pptx",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/filter-pptx",
+                "reference": "b4971c8fa145c95231820eac2b34c42fecf789fd"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "ext-zip": "*",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\FilterPptx\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\FilterPptx\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "PowerPoint (.pptx) file filter for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/filter-xlsx",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/filter-xlsx",
+                "reference": "c6a18992963b4cdd429e9956e16ab687a0beb31d"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "ext-zip": "*",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\FilterXlsx\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\FilterXlsx\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Excel (.xlsx) file filter for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/mt",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/mt",
+                "reference": "281eeff3d3b36e389da82fe0bd62e3979507b468"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "php": "^8.2",
+                "psr/http-client": "^1.0",
+                "psr/http-factory": "^1.0",
+                "psr/http-message": "^1.1 || ^2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\Mt\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\Mt\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Machine translation adapter framework for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/project",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/project",
+                "reference": "8194cf284edc6d209372ac067e1937d18224b9ba"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "ext-zip": "*",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "suggest": {
+                "ext-pdo_pgsql": "Required by PostgresSegmentStore and DatabaseSkeletonStore when targeting PostgreSQL"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\Project\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\Project\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Project manifest and catpack archive format for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/qa",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/qa",
+                "reference": "a7e668d9380d1ad2da8d58f26c9764f0b88aa54e"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "ext-intl": "*",
+                "ext-mbstring": "*",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\Qa\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\Qa\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Per-segment quality checks for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/segmentation",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/segmentation",
+                "reference": "2fdc74b63e6c7d3155e0bfe12d69b66a5a33a584"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "catframework/srx": "^0.1",
+                "ext-mbstring": "*",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\Segmentation\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\Segmentation\\Tests\\": "tests/"
+                }
+            },
+            "description": "SRX-based sentence segmentation engine for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/srx",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/srx",
+                "reference": "03b7d24fa74ac95ee9143a50a0bf3229ca6cca3f"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\Srx\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\Srx\\Tests\\": "tests/"
+                }
+            },
+            "description": "SRX 2.0 segmentation rule parser for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/terminology",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/terminology",
+                "reference": "66d7c685988ce1cc418663ec5adc005fe4da77df"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "ext-dom": "*",
+                "ext-intl": "*",
+                "ext-mbstring": "*",
+                "ext-pdo": "*",
+                "ext-pdo_sqlite": "*",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\Terminology\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\Terminology\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Term recognition and TBX import for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/tmx",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/tmx",
+                "reference": "708dfd8c7192c353c8b32af31f32bed07a24d142"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "ext-xmlreader": "*",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\Tmx\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\Tmx\\Tests\\": "tests/"
+                }
+            },
+            "description": "TMX 1.4b parser and writer for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/translation-memory",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/translation-memory",
+                "reference": "dd4594ab04f799fe59fad8fdf4d5d32097fa423c"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "catframework/tmx": "^0.1",
+                "ext-intl": "*",
+                "ext-mbstring": "*",
+                "ext-pdo": "*",
+                "ext-pdo_sqlite": "*",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "suggest": {
+                "ext-pdo_pgsql": "Required for PostgresTranslationMemory — also needs pg_trgm extension enabled in the database"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\TranslationMemory\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\TranslationMemory\\Tests\\": "tests/"
+                }
+            },
+            "description": "SQLite-backed translation memory with fuzzy matching for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/workflow",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/workflow",
+                "reference": "208bc395518189d93f4da0b9c312975084705087"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "catframework/mt": "^0.1",
+                "catframework/project": "^0.1",
+                "catframework/qa": "^0.1",
+                "catframework/segmentation": "^0.1",
+                "catframework/terminology": "^0.1",
+                "catframework/translation-memory": "^0.1",
+                "catframework/xliff": "^0.1",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "catframework/filter-plaintext": "^0.1",
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\Workflow\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\Workflow\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Pipeline orchestration for the CAT Framework — wires filter, segmentation, TM, MT, QA, and XLIFF into a single WorkflowRunner",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "catframework/xliff",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../cat-framework/packages/xliff",
+                "reference": "75d4de430b13246f4a44e4f02d7ed13b00a30f35"
+            },
+            "require": {
+                "catframework/core": "^0.1",
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CatFramework\\Xliff\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CatFramework\\Xliff\\Tests\\": "tests/"
+                }
+            },
+            "description": "XLIFF 1.2 writer and reader for the CAT Framework",
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "dflydev/dot-access-data",
@@ -4811,7 +5382,7 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.36.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
@@ -4870,7 +5441,7 @@
                 "portable"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.36.0"
+                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -4894,16 +5465,16 @@
         },
         {
             "name": "symfony/polyfill-intl-grapheme",
-            "version": "v1.36.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
-                "reference": "ad1b7b9092976d6c948b8a187cec9faaea9ec1df"
+                "reference": "4864388bfbd3001ce88e234fab652acd91fdc57e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/ad1b7b9092976d6c948b8a187cec9faaea9ec1df",
-                "reference": "ad1b7b9092976d6c948b8a187cec9faaea9ec1df",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/4864388bfbd3001ce88e234fab652acd91fdc57e",
+                "reference": "4864388bfbd3001ce88e234fab652acd91fdc57e",
                 "shasum": ""
             },
             "require": {
@@ -4952,7 +5523,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.36.0"
+                "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -4972,11 +5543,11 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-04-10T16:19:22+00:00"
+            "time": "2026-04-26T13:13:48+00:00"
         },
         {
             "name": "symfony/polyfill-intl-idn",
-            "version": "v1.36.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-idn.git",
@@ -5039,7 +5610,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-intl-idn/tree/v1.36.0"
+                "source": "https://github.com/symfony/polyfill-intl-idn/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -5063,7 +5634,7 @@
         },
         {
             "name": "symfony/polyfill-intl-normalizer",
-            "version": "v1.36.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
@@ -5124,7 +5695,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.36.0"
+                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -5148,7 +5719,7 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.36.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
@@ -5209,7 +5780,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.36.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -5233,7 +5804,7 @@
         },
         {
             "name": "symfony/polyfill-php80",
-            "version": "v1.36.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php80.git",
@@ -5293,7 +5864,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php80/tree/v1.36.0"
+                "source": "https://github.com/symfony/polyfill-php80/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -5317,7 +5888,7 @@
         },
         {
             "name": "symfony/polyfill-php84",
-            "version": "v1.36.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php84.git",
@@ -5373,7 +5944,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php84/tree/v1.36.0"
+                "source": "https://github.com/symfony/polyfill-php84/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -5397,16 +5968,16 @@
         },
         {
             "name": "symfony/polyfill-php85",
-            "version": "v1.36.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php85.git",
-                "reference": "2c408a6bb0313e6001a83628dc5506100474254e"
+                "reference": "fcfa4973a9917cef23f2e38774da74a2b7d115ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php85/zipball/2c408a6bb0313e6001a83628dc5506100474254e",
-                "reference": "2c408a6bb0313e6001a83628dc5506100474254e",
+                "url": "https://api.github.com/repos/symfony/polyfill-php85/zipball/fcfa4973a9917cef23f2e38774da74a2b7d115ee",
+                "reference": "fcfa4973a9917cef23f2e38774da74a2b7d115ee",
                 "shasum": ""
             },
             "require": {
@@ -5453,7 +6024,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php85/tree/v1.36.0"
+                "source": "https://github.com/symfony/polyfill-php85/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -5473,11 +6044,11 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-04-10T16:50:15+00:00"
+            "time": "2026-04-26T13:10:57+00:00"
         },
         {
             "name": "symfony/polyfill-uuid",
-            "version": "v1.36.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-uuid.git",
@@ -5536,7 +6107,7 @@
                 "uuid"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-uuid/tree/v1.36.0"
+                "source": "https://github.com/symfony/polyfill-uuid/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -8491,7 +9062,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.3"
+        "php": "^8.4"
     },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"

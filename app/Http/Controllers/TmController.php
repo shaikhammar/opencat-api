@@ -3,18 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
-use App\Models\UploadedFile;
-use App\Services\FileStorageService;
 use App\Services\ProjectService;
+use CatFramework\Core\Model\Segment;
+use CatFramework\Core\Model\TranslationUnit;
+use CatFramework\TranslationMemory\SqliteTranslationMemory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class TmController extends Controller
 {
-    public function __construct(
-        private readonly ProjectService     $projects,
-        private readonly FileStorageService $storage,
-    ) {}
+    public function __construct(private readonly ProjectService $projects) {}
 
     /**
      * Look up segments in the project TM.
@@ -40,11 +38,21 @@ class TmController extends Controller
         $project = Project::findOrFail($data['projectId']);
         $this->authorize('view', $project);
 
-        // catframework/translation-memory integration point:
-        // $tm = new SqliteTranslationMemory($this->projects->tmPath($project, $data['targetLang']));
-        // $matches = $tm->lookup($data['text'], $data['sourceLang'], $data['targetLang'], $data['limit'] ?? 5);
+        $this->projects->ensureDirectoryExists($project);
+        $tm      = $this->makeTm($project, $data['targetLang']);
+        $source  = new Segment('query', [$data['text']]);
+        $matches = $tm->lookup($source, $data['sourceLang'], $data['targetLang'], 0.5, $data['limit'] ?? 5);
 
-        return response()->json(['data' => ['matches' => []]]);
+        return response()->json([
+            'data' => [
+                'matches' => array_map(fn($m) => [
+                    'score'      => round($m->score * 100),
+                    'type'       => $m->type->value,
+                    'sourceText' => $m->translationUnit->source->getPlainText(),
+                    'targetText' => $m->translationUnit->target->getPlainText(),
+                ], $matches),
+            ],
+        ]);
     }
 
     /**
@@ -67,14 +75,12 @@ class TmController extends Controller
         $project = Project::findOrFail($data['projectId']);
         $this->authorize('update', $project);
 
-        $tmxPath = $request->file('tmxFile')->store('tmp', 'local');
+        $this->projects->ensureDirectoryExists($project);
+        $tmxPath  = $request->file('tmxFile')->getRealPath();
+        $tm       = $this->makeTm($project, $data['targetLang']);
+        $imported = $tm->import($tmxPath);
 
-        // catframework/tmx + catframework/translation-memory integration point:
-        // $segments = (new TmxReader)->read(storage_path('app/' . $tmxPath));
-        // $tm = new SqliteTranslationMemory($this->projects->tmPath($project, $data['targetLang']));
-        // $tm->importBatch($segments);
-
-        return response()->json(['data' => ['imported' => 0]]);
+        return response()->json(['data' => ['imported' => $imported]]);
     }
 
     /**
@@ -101,9 +107,25 @@ class TmController extends Controller
         $project = Project::findOrFail($data['projectId']);
         $this->authorize('update', $project);
 
-        // $tm = new SqliteTranslationMemory($this->projects->tmPath($project, $data['targetLang']));
-        // $tm->add($data['sourceLang'], $data['targetLang'], $data['sourceText'], $data['targetText']);
+        $this->projects->ensureDirectoryExists($project);
+
+        $unit = new TranslationUnit(
+            source:         new Segment('src', [$data['sourceText']]),
+            target:         new Segment('tgt', [$data['targetText']]),
+            sourceLanguage: $data['sourceLang'],
+            targetLanguage: $data['targetLang'],
+            createdAt:      new \DateTimeImmutable(),
+        );
+
+        $this->makeTm($project, $data['targetLang'])->store($unit);
 
         return response()->json(['data' => ['stored' => true]]);
+    }
+
+    private function makeTm(Project $project, string $targetLang): SqliteTranslationMemory
+    {
+        $path = $this->projects->tmPath($project, $targetLang);
+
+        return new SqliteTranslationMemory(new \PDO("sqlite:{$path}"));
     }
 }

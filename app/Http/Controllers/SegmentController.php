@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use CatFramework\Core\Model\Segment;
+use CatFramework\Segmentation\SrxSegmentationEngine;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -22,10 +24,14 @@ class SegmentController extends Controller
             'lang' => 'required|string|max:10',
         ]);
 
-        // catframework/segmentation integration point:
-        // $engine    = app(SrxSegmentationEngine::class);
-        // $sentences = $engine->segment($data['text'], $data['lang']);
+        $engine    = new SrxSegmentationEngine();
+        $input     = new Segment('input', [$data['text']]);
+        $sentences = $engine->segment($input, $data['lang']);
 
-        return response()->json(['data' => ['sentences' => []]]);
+        return response()->json([
+            'data' => [
+                'sentences' => array_map(fn($s) => $s->getPlainText(), $sentences),
+            ],
+        ]);
     }
 }

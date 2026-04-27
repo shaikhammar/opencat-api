@@ -4,6 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\UploadedFile;
 use App\Services\FileStorageService;
+use CatFramework\Qa\Check\DoubleSpaceCheck;
+use CatFramework\Qa\Check\EmptyTranslationCheck;
+use CatFramework\Qa\Check\NumberConsistencyCheck;
+use CatFramework\Qa\Check\TagConsistencyCheck;
+use CatFramework\Qa\Check\WhitespaceCheck;
+use CatFramework\Qa\QualityRunner;
+use CatFramework\Xliff\XliffReader;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -22,9 +29,9 @@ class QaController extends Controller
     public function run(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'fileId' => 'required|integer|exists:uploaded_files,id',
-            'checks' => 'sometimes|array',
-            'checks.*' => 'string',
+            'fileId'    => 'required|integer|exists:uploaded_files,id',
+            'checks'    => 'sometimes|array',
+            'checks.*'  => 'string',
         ]);
 
         $file = UploadedFile::findOrFail($data['fileId']);
@@ -32,11 +39,39 @@ class QaController extends Controller
 
         $path = $this->storage->absolutePath($file);
 
-        // catframework/qa integration point:
-        // $xliff    = (new XliffReader)->read($path);
-        // $runner   = new QualityRunner($data['checks'] ?? null);
-        // $issues   = $runner->run($xliff);
+        $doc    = (new XliffReader())->read($path);
+        $runner = $this->buildRunner($data['checks'] ?? []);
+        $issues = $runner->run($doc);
 
-        return response()->json(['data' => ['issues' => []]]);
+        return response()->json([
+            'data' => [
+                'issues' => array_map(fn($issue) => [
+                    'checkId'   => $issue->checkId,
+                    'severity'  => $issue->severity->value,
+                    'message'   => $issue->message,
+                    'segmentId' => $issue->segmentId,
+                ], $issues),
+            ],
+        ]);
+    }
+
+    private function buildRunner(array $filter): QualityRunner
+    {
+        $all = [
+            new EmptyTranslationCheck(),
+            new WhitespaceCheck(),
+            new DoubleSpaceCheck(),
+            new NumberConsistencyCheck(),
+            new TagConsistencyCheck(),
+        ];
+
+        $runner = new QualityRunner();
+        foreach ($all as $check) {
+            if ($filter === [] || in_array($check->getId(), $filter, true)) {
+                $runner->register($check);
+            }
+        }
+
+        return $runner;
     }
 }
