@@ -1,6 +1,6 @@
-# cat-framework-api
+# opencat-api
 
-REST API service for the [CAT Framework](https://github.com/catframework/cat-framework). Exposes all framework capabilities (segmentation, TM, MT, QA, terminology, full workflow) over HTTP so any tech stack can build CAT tooling against it.
+REST API service for the [OpenCAT Framework](https://github.com/shaikhammar/opencat-framework). Exposes all framework capabilities (segmentation, TM, MT, QA, terminology, full workflow) over HTTP so any tech stack can build CAT tooling against it.
 
 **Stack:** Laravel 13 · PHP 8.4 · Sanctum token auth · Laravel Queue · SQLite (default) · Docker
 
@@ -11,7 +11,6 @@ REST API service for the [CAT Framework](https://github.com/catframework/cat-fra
 - PHP 8.4+
 - Composer 2
 - SQLite (default) or MySQL/PostgreSQL
-- The `cat-framework` monorepo checked out as a sibling directory (`../cat-framework`) for path dependencies
 
 ---
 
@@ -21,7 +20,7 @@ REST API service for the [CAT Framework](https://github.com/catframework/cat-fra
 # 1. Copy env
 cp .env.example .env
 
-# 2. Install dependencies
+# 2. Install dependencies (opencat/* packages are pulled from Packagist)
 composer install
 
 # 3. Generate app key and run migrations
@@ -197,3 +196,21 @@ php artisan scribe:generate
 ```
 
 Spec available at `http://localhost:8000/docs` (HTML) and `http://localhost:8000/docs.json` (OpenAPI 3.1 JSON).
+
+---
+
+## Framework packages
+
+All `opencat/*` packages are available via Composer:
+
+```bash
+composer require opencat/workflow opencat/translation-memory opencat/qa
+```
+
+See the [OpenCAT Framework](https://github.com/shaikhammar/opencat-framework) for the full package list and documentation.
+
+---
+
+## License
+
+MIT
